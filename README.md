@@ -3,4 +3,4 @@ Visual C++ is used as the graphics option....<br>
 Team Contributer:<br> 
   Rafy Bhuiyan<br>
   Dibbya Stutrom Dey<br>
-  Ishrat Jahan Eshita
+  Israt Jahan Eshita
