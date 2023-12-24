@@ -1,5 +1,4 @@
 #include<iostream>
-nihlkmnbvuy
 using namespace std;
 # include "iGraphics.h"
 int mposx,  mposy;
