@@ -30,7 +30,7 @@ void playerrun()
 		run = false;
 	}
 }
-void shinobiattack()
+void playerattack()
 {
 	if (attack)
 		playerattackindex++;
@@ -40,11 +40,24 @@ void shinobiattack()
 		attack = false;
 	}
 }
+void playershield()
+{
+	if ((enemycorx - playercorx <= charwidth-100)||shieldindex)
+	{
+		shieldindex++;
+		if (shieldindex == 3)
+		{
+			shieldindex = 0;
+		}
+	}
+}
 void enemyattack()
 {
-	enemyattackindex++;
-	if (enemyattackindex == 10)
-	{
-		enemyattackindex = 0;
+	if (rand() % (15-(level*2)) == 3 || enemyattackindex){
+		enemyattackindex++;
+		if (enemyattackindex == 10)
+		{
+			enemyattackindex = 0;
+		}
 	}
 }
