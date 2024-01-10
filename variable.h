@@ -22,3 +22,7 @@ int runindex = 0;
 bool enemymove = false;
 bool enemyfight = false;
 int shieldindex = 0;
+int playerhealthbarx;
+int enemyhealthbarx;
+int playerhealth = 100;
+int enemyhealth = 50 * (level + 1);
