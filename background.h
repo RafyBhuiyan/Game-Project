@@ -1,1 +1,0 @@
-char bground[3][50] = { "image/Cartoon_Forest_BG_02 (1).png", "", "" };
