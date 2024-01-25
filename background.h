@@ -1,1 +1,1 @@
-char level1bground[3][50] = { "image/Cartoon_Forest_BG_02 (1).png", "", "" };
+char level1bground[3][50] = { "image/BG01.png", "image/BG02.png", "image/BG03.png" };

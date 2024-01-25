@@ -2,11 +2,11 @@
 using namespace std;
 #include "iGraphics.h"
 #include "variable.h"
+#include "struct.h"
 #include "function.h"
 #include "background.h"
 #include "Level1.h"
 #include "playerchar.h"
-
 void iDraw()
 {
 	iClear();
@@ -21,7 +21,8 @@ void iDraw()
 		iFilledRectangle(50, 530, playerhealth, 20);
 		iRectangle(900, 530, 300, 20);
 		iSetColor(255, 0, 0);
-		iFilledRectangle(900, 530, enemyhealth * 6, 20);
+		enemyhealthbarx = enemyhealth;
+		iFilledRectangle(900, 530, enemyhealthbarx, 20);
 		if (run)
 		{
 			iShowImage(playercorx, playercory, charwidth, charheight, iLoadImage(player_run[runindex]));
@@ -37,11 +38,11 @@ void iDraw()
 		{
 			iShowImage(playercorx, playercory, charwidth, charheight, iLoadImage(player_jump[jumpindex]));
 		}
-		else if (enemycorx - playercorx <= charwidth - 50)
+		else if (enemycorx - playercorx <= distancebetweenchar)
 		{
 			iShowImage(playercorx, playercory, charwidth, charheight, iLoadImage(player_sheild[shieldindex]));
 			shield = true;
-			healthcheck();
+			//healthcheck();
 		}
 		else
 		{
@@ -49,7 +50,8 @@ void iDraw()
 		}
 		healthcheck();
 		enemycorx = min(enemycorx, sclength - enemywidth);
-		iShowImage(enemycorx, enemycory, enemyheight, enemywidth, iLoadImage(level1enemy_attack[enemyattackindex]));
+		//iShowImage(enemycorx, enemycory, enemyheight, enemywidth, iLoadImage(tlevels[levels].enemy_attack[enemyattackindex]));
+		iShowImage(enemycorx, enemycory, enemyheight, enemywidth, iLoadImage(ra));
 		if (enemycorx - playercorx >= 100)
 		{
 			enemycorx -= 2;
@@ -57,9 +59,13 @@ void iDraw()
 		if (playerhealth <= 0 || enemyhealth <= 0)
 		{
 			gameon = false;
+			if (playerhealth > enemyhealth)
+			{
+				enemydead = true;
+			}
 		}
 	}
-	else if (playerhealth)
+	else if (playerhealth>=0)
 	{
 		score += (playerhealth / 3);
 		iText(sclength / 2, scheight / 2, "Game over......Player Won", GLUT_BITMAP_TIMES_ROMAN_24 );
@@ -70,6 +76,8 @@ void iDraw()
 	{
 		iText(sclength / 2, scheight / 2, "Game over.......Enemy Won", GLUT_BITMAP_TIMES_ROMAN_24);
 	}
+
+	sprintf_s(ra, "image/enemy1/Attack_00%d.png", enemyattackindex);
 }
 void iMouseMove(int mx, int my)
 {
@@ -113,8 +121,8 @@ void iKeyboard(unsigned char key)
 	{
 		if (!gameon && playerhealth)
 		{
-			new_level();
 			level++;
+			new_level();
 		}
 	}
 }
@@ -155,15 +163,19 @@ void iSpecialKeyboard(unsigned char key)
 		shield = false;
 	}
 }
+void change()
+{
+	playerrun();
+	jump();
+	playerattack();
+	enemyattack();
+	playershield();
+}
 int main()
 {
 	///srand((unsigned)time(NULL));
 	iInitialize(sclength, scheight, "Zeda : The Ultimate Revenge");
-	iSetTimer(1, playerrun);
-	iSetTimer(1, jump);
-	iSetTimer(1, playerattack);
-	iSetTimer(1, enemyattack);
-	iSetTimer(1, playershield);
+	iSetTimer(0, change);
 	///updated see the documentations
 	iStart();
 	return 0;

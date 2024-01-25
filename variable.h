@@ -1,9 +1,12 @@
 int mposx, mposy;
+
+char ra[40];
 int sclength = 1263;
 int scheight = 593;
 int level = 0;
 int playercorx = 350;
 int playercory = 50;
+int distancebetweenchar = 200;
 int playerattackindex = 0;
 int enemycorx = 700;
 int enemycory = 20;
@@ -22,12 +25,16 @@ bool enemymove = false;
 bool enemyfight = false;
 int shieldindex = 0;
 int playerhealthbarx;
-int enemyhealthbarx;
 int playerhealth = 300;
-int enemyhealth = 50 * (level + 1);
+int enemyhealth = 300;
+int enemyhealthbarx = 300;
 int score=0;
 bool gameon=true;
 bool shield = true;
+bool playerdead = false;
+bool enemydead = false;
+int enemydeathindex = 0;
+int playerdeathindex = 0;
 void new_level()
 {
 	playercorx = 350;
@@ -49,10 +56,10 @@ void new_level()
 	enemymove = false;
 	enemyfight = false;
 	shieldindex = 0;
-	playerhealthbarx=playerhealth;
-	enemyhealthbarx=enemyhealth;
 	playerhealth = 300;
-	enemyhealth = 50 * (level + 1);
+	enemyhealth = 300;
+	playerhealthbarx=playerhealth;
+	enemyhealthbarx = (300 / enemyhealth) * 300;
 	gameon = true;
 	shield = true;
 }

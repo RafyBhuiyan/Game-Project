@@ -64,12 +64,12 @@ void enemyattack()
 }
 void healthcheck()
 {
-	if (enemycorx - playercorx <= charwidth - 50)
+	if (enemycorx - playercorx <= distancebetweenchar)
 	{
 		if ((playerattackindex * 2 > enemyattackindex && attack))
 		{
 			enemycorx += 20;
-			enemyhealth -= (level + 1) * 2;
+			enemyhealth -= (15 - (level*5));
 			attack = false;
 		}
 		else if (playerattackindex * 2 == enemyattackindex && attack && enemyfight)
@@ -80,7 +80,7 @@ void healthcheck()
 		else if ((playerattackindex * 2 < enemyattackindex && enemyfight) || (run && enemyattackindex && enemyfight))
 		{
 			playercorx -= 20;
-			playerhealth -= 20;
+			playerhealth -= (20 + level*10);
 			if (shield)
 			{
 				playerhealth += 10;
@@ -95,7 +95,3 @@ void healthcheck()
 		}
 	}
 }
-struct totallevels
-{
-	char enemy_attack[10][40],background[40];
-} tlevels[3], currentlevel;
