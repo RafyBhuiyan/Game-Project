@@ -7,11 +7,34 @@ using namespace std;
 #include "background.h"
 #include "Level1.h"
 #include "playerchar.h"
+int temp = 0;
 void iDraw()
 {
 	iClear();
-	if (gameon)
+	if (story)
 	{
+		sprintf_s(storypic, "image/storypage%d.png", storynum);
+		iShowImage(0, 0, sclength, scheight, iLoadImage(storypic));
+	}
+	else if (control)
+	{
+		iShowImage(0, 0, sclength, scheight, iLoadImage("image/instructions.png"));
+	}
+	else if (about)
+	{
+		iShowImage(0, 0, sclength, scheight, iLoadImage("image/aboutpage.png"));
+	}
+	else if (option)
+	{
+		iShowImage(0, 0, sclength, scheight, iLoadImage("image/optionpage.png"));
+	}
+	else if (homepage)
+	{
+		homepagefunc();
+	}
+	else if (gameon)
+	{
+		sprintf_s(enemyattackpic, "image/enemy_%d/Attack_00%d.png", level + 1, enemyattackindex);
 		iShowImage(0, 0, sclength, scheight, iLoadImage(level1bground[level]));
 		iSetColor(255, 255, 255);
 		iText(50, 560, "Player's Health", GLUT_BITMAP_TIMES_ROMAN_24);
@@ -27,10 +50,13 @@ void iDraw()
 		{
 			iShowImage(playercorx, playercory, charwidth, charheight, iLoadImage(player_run[runindex]));
 		}
-		else if (attack){
+		else if (attack)
+		{
 			iShowImage(playercorx, playercory, charwidth, charheight, iLoadImage(player_attack[playerattackindex]));
 			if (playerattackindex == 3)
 			{
+				if (!mute)
+					PlaySound("sounds/playerhitsound.wav", NULL, SND_ASYNC);
 				enemycorx += 20;
 			}
 		}
@@ -42,7 +68,6 @@ void iDraw()
 		{
 			iShowImage(playercorx, playercory, charwidth, charheight, iLoadImage(player_sheild[shieldindex]));
 			shield = true;
-			//healthcheck();
 		}
 		else
 		{
@@ -50,8 +75,7 @@ void iDraw()
 		}
 		healthcheck();
 		enemycorx = min(enemycorx, sclength - enemywidth);
-		//iShowImage(enemycorx, enemycory, enemyheight, enemywidth, iLoadImage(tlevels[levels].enemy_attack[enemyattackindex]));
-		iShowImage(enemycorx, enemycory, enemyheight, enemywidth, iLoadImage(ra));
+		iShowImage(enemycorx, enemycory, enemyheight, enemywidth, iLoadImage(enemyattackpic));
 		if (enemycorx - playercorx >= 100)
 		{
 			enemycorx -= 2;
@@ -65,43 +89,158 @@ void iDraw()
 			}
 		}
 	}
-	else if (playerhealth>=0)
+	else if (playerhealth > 0)
 	{
 		score += (playerhealth / 3);
-		iText(sclength / 2, scheight / 2, "Game over......Player Won", GLUT_BITMAP_TIMES_ROMAN_24 );
-		//iText(sclength / 2, scheight / 2 -25, "", GLUT_BITMAP_TIMES_ROMAN_24);
-		//iText(sclength / 2, scheight / 2, "New one.......", GLUT_BITMAP_TIMES_ROMAN_24);
+		if (level < 2){
+			iShowImage(0, 0, sclength, scheight, iLoadImage("image/Won.png"));
+			if (!temp)
+			{
+				temp++;
+				if (!mute)
+				PlaySound("sounds/levelwinsound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+		}
+		else
+		{
+			iShowImage(0, 0, sclength, scheight, iLoadImage("image/final_win.png"));
+			if (!temp)
+			{
+				temp++;
+				if (!mute)
+				PlaySound("sounds/finalwinsound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+		}
 	}
 	else
 	{
-		iText(sclength / 2, scheight / 2, "Game over.......Enemy Won", GLUT_BITMAP_TIMES_ROMAN_24);
+		iShowImage(0, 0, sclength, scheight, iLoadImage("image/Game_Over.png"));
 	}
-
-	sprintf_s(ra, "image/enemy1/Attack_00%d.png", enemyattackindex);
 }
 void iMouseMove(int mx, int my)
 {
-	
+
 }
 //*******************************************************************ipassiveMouse***********************************************************************//
 void iPassiveMouseMove(int mx, int my)
 {
-	
+
 }
 
 void iMouse(int button, int state, int mx, int my)
 {
-	
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-
-		
+		cout << mx << " " << my << endl;
+		if (story)
+		{
+			if (mx >= 1045 && mx <= 1150 && my >= 20 && my <= 100)
+			{
+				storynum++;
+				if (storynum == 3)
+				{
+					story = false;
+					homepage = true;
+				}
+			}
+		}
+		else if (control || about)
+		{
+			if (mx >= 45 && mx <= 125 && my >= 490 && my <= 530)
+			{
+				control = false;
+				about = false;
+			}
+		}
+		else if (option)
+		{
+			if (mx >= 55 && mx <= 115 && my >= 490 && my <= 530)
+			{
+				option = false;
+				if (!mute)
+					PlaySound("sounds/storyandhomesound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+			if (mx >= 500 && mx <= 780)
+			{
+				if (my >= 335 && my <= 405)
+				{
+				}
+				else if (my >= 255 && my <= 325)
+				{
+					control = true;
+				}
+				else if (my >= 175 && my <= 245)
+				{
+					about = true;
+				}
+			}
+		}
+		else if (homepage)
+		{
+			if (mx >= 550 && mx <= 720 && my <= 230 && my >= 155)
+			{
+				homepage = 0;
+				gameon = true;
+				if (!mute)
+				PlaySound("sounds/gameplaysound.wav", NULL, SND_ASYNC);
+			}
+			else if (mx >= 1110 && mx <= 1215 && my <= 75 && my >= 10)
+			{
+				exit(0);
+			}
+			else if (mx >= 60 && mx <= 140 && my <= 75 && my >= 5)
+			{
+				option = true;
+				if (!mute)
+					PlaySound("sounds/optionsound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+		}
+		else if (playerhealth && !gameon)
+		{
+			if (mx >= 485 && mx <= 765 && my <= 340 && my >= 270)
+			{
+				if (level!=2)
+				{
+					level++;
+					gameon = true;
+					new_level();
+					temp = 0;
+				}
+			}
+			else if (mx >= 485 && mx <= 765 && my <= 260 && my >= 190)
+			{
+				level = 0;
+				new_level();
+				homepage = true;
+				temp = 0;
+				if (!mute)
+				PlaySound("sounds/storyandhomesound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+			else if (mx >= 500 && mx <= 770 && my <= 148 && my >= 80 && level == 2)
+			{
+				level = 0;
+				new_level();
+				homepage = true;
+				temp = 0;
+				if (!mute)
+				PlaySound("sounds/storyandhomesound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+		}
+		else if (!gameon && enemyhealth)
+		{
+			if (mx >= 500 && mx <= 770 && my <= 148 && my >= 80)
+			{
+				level = 0;
+				new_level();
+				homepage = true;
+				temp = 0;
+				if (!mute)
+				PlaySound("sounds/storyandhomesound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+		}
 	}
-	
-	
 	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
 	{
-		
 	}
 }
 
@@ -115,14 +254,50 @@ void iKeyboard(unsigned char key)
 {
 	if (key == ' ')
 	{
-		attack = true;
-	}
-	if (key == 'n')
-	{
-		if (!gameon && playerhealth)
+		if (story)
 		{
-			level++;
-			new_level();
+			storynum++;
+			if (storynum == 3)
+			{
+				story = false;
+				homepage = true;
+			}
+		}
+		else if (gameon)
+		{
+			attack = true;
+		}
+	}
+	if (key == 'm')
+	{
+		mute = mute ? false : true;
+		if (mute)
+		{
+			PlaySound("sounds/soundoff.wav", NULL, SND_ASYNC);
+		}
+		else
+		{
+			if (option)
+			{
+				PlaySound("sounds/optionsound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+			else if (homepage)
+			{
+				PlaySound("sounds/storyandhomesound.wav", NULL, SND_LOOP | SND_ASYNC);
+			}
+			else if (gameon)
+			{
+			}
+			else
+			{
+				if (playerhealth)
+				{
+					if (level!=2)
+					PlaySound("sounds/levelwinsound.wav", NULL, SND_LOOP | SND_ASYNC);
+					else
+					PlaySound("sounds/finalwinsound.wav", NULL, SND_LOOP | SND_ASYNC);
+				}
+			}
 		}
 	}
 }
@@ -141,8 +316,8 @@ void iSpecialKeyboard(unsigned char key)
 	if (key == GLUT_KEY_RIGHT)
 	{
 		playercorx += 30;
-		playercorx = min(playercorx, sclength - charwidth-50);
-		if (playercorx >= enemycorx-50)
+		playercorx = min(playercorx, sclength - charwidth - 50);
+		if (playercorx >= enemycorx - 50)
 		{
 			enemycorx += 30;
 		}
@@ -159,8 +334,15 @@ void iSpecialKeyboard(unsigned char key)
 	if (key == GLUT_KEY_UP)
 	{
 		if (!countjump && !onair)
-				countjump = 1;
+			countjump = 1;
 		shield = false;
+	}
+	if (key == GLUT_KEY_HOME)
+	{
+		homepage = true;
+		level = 0;
+		new_level();
+		if (!mute) PlaySound("sounds/storyandhomesound.wav", NULL, SND_LOOP | SND_ASYNC);
 	}
 }
 void change()
@@ -175,6 +357,7 @@ int main()
 {
 	///srand((unsigned)time(NULL));
 	iInitialize(sclength, scheight, "Zeda : The Ultimate Revenge");
+	PlaySound("sounds/storyandhomesound.wav", NULL, SND_LOOP | SND_ASYNC);
 	iSetTimer(0, change);
 	///updated see the documentations
 	iStart();

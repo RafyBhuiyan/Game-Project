@@ -1,3 +1,7 @@
+void homepagefunc()
+{
+	iShowImage(0, 0, sclength, scheight, iLoadImage("image/homepage.png"));
+}
 void jump()
 {
 	if (countjump && jumpindex<8)
@@ -66,18 +70,20 @@ void healthcheck()
 {
 	if (enemycorx - playercorx <= distancebetweenchar)
 	{
-		if ((playerattackindex * 2 > enemyattackindex && attack))
+		if ((playerattackindex * 2 > enemyattackindex && attack && playerattackindex == 3 ))
 		{
 			enemycorx += 20;
-			enemyhealth -= (15 - (level*5));
+			enemyhealth -= (30 - (level*5));
 			attack = false;
 		}
 		else if (playerattackindex * 2 == enemyattackindex && attack && enemyfight)
 		{
 			playercorx -= 20;
+			playerhealth -= 10;
+			enemyhealth -= 10;
 			enemycorx += 20;
 		}
-		else if ((playerattackindex * 2 < enemyattackindex && enemyfight) || (run && enemyattackindex && enemyfight))
+		else if (((playerattackindex * 2 < enemyattackindex && enemyfight) || (run && enemyattackindex && enemyfight))&& enemyattackindex==7)
 		{
 			playercorx -= 20;
 			playerhealth -= (20 + level*10);

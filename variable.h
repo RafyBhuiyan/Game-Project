@@ -1,6 +1,8 @@
 int mposx, mposy;
-
-char ra[40];
+bool homepage = true;
+char enemyattackpic[40];
+char enemywalkpic[40];
+char storypic[40];
 int sclength = 1263;
 int scheight = 593;
 int level = 0;
@@ -35,6 +37,13 @@ bool playerdead = false;
 bool enemydead = false;
 int enemydeathindex = 0;
 int playerdeathindex = 0;
+int enemywalkindex = 0;
+bool story = true;
+bool option = false;
+bool control = false;
+bool about = false;
+int storynum = 1;
+bool mute = false;
 void new_level()
 {
 	playercorx = 350;
